@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce SMIT</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Seller DashBoard</h1>
+        </div>
+    </header>
+    <main id="main">
+        
+<button onclick="showAddProductModal()" class="custom-btn btn-1">Add Product</button>
+    </main>
+    <center>
+        <div id="addProductModal">
+            <div class="addProductBox">
+                <h1>Add Product</h1>
+                <input type="number" placeholder="Item ID" disabled >
+                <input type="text" placeholder="Item Name" required>
+                <input type="number" placeholder="Item Price" required>
+                <input type="text" placeholder="Item Description" required>
+                <input type="url" placeholder="Item Image URL" required>
+                <button onclick="addProduct()" class="custom-btn btn-1">ADD</button>
+            </div>
+        </div>
+    </center>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 E-commerce Site. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+
+<script>
+    document.getElementById('addProductModal').style.display='none'
+    function showAddProductModal(){
+        document.getElementById('main').style.display='none'
+        document.getElementById('addProductModal').style.display='block'
+
+    }
+
+</script>
+</html>
