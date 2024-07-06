@@ -44,6 +44,7 @@ createUserWithEmailAndPassword(auth, email+type, password)
   .then((userCredential) => {
     console.log("Account Created")
     const user = userCredential.user;
+    if(type=='s'){    localStorage.setItem(email,null)    }
     console.log(user)
     document.getElementById('login-form').style.display = 'block';
     document.getElementById('signup-form').style.display = 'none';
@@ -60,7 +61,6 @@ console.log("Error")
   }); 
 });
 
-
 document.getElementById('login').addEventListener('click', (e) => {
   var email=document.getElementById('att-email').value
   var password=document.getElementById('att-password').value
@@ -72,8 +72,14 @@ if(document.getElementById('user-type-login').value=='customer'){
 }
 signInWithEmailAndPassword(auth, email+type, password)
   .then((userCredential) => {
-console.log("Done")
+console.log("Verificaton Succesful")
     const user = userCredential.user;
+    localStorage.setItem('currentUser',email)
+    if(type=='c'){
+      window.location.href="customerDashboard.html"
+    }else if(type=='s'){
+      window.location.href="sellerDashboard.html"
+    }
 console.log(user)
   })
   .catch((error) => {

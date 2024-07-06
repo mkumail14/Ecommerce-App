@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce SMIT | Customer Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px;
+            text-align: center;
+            max-width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .card img {
+            max-width: 100%;
+            height: auto;
+        }
+        .card h2 {
+            font-size: 1.5em;
+            margin: 10px 0;
+        }
+        .card p {
+            margin: 5px 0;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .cart-container {
+            margin-top: 30px;
+        }
+        .cart {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .cart h2 {
+            font-size: 1.5em;
+            margin: 10px 0;
+        }
+        .cart-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+            margin-bottom: 10px;
+        }
+        .total-section {
+            margin-top: 20px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Customer Dashboard</h1>
+        </div>
+    </header>
+    <main id="main">
+        <div class="container" id="productCardsContainer"></div>
+        <button onclick="openCart()" class="custom-btn btn-1" style="margin: 10px;">CART</button>
+        <button onclick="logout()" class="custom-btn btn-1" style="margin: 10px;">LogOut</button>
+
+    </main>
+    <div class="cart-container" id="cartContainer">
+        <div class="cart">
+            <button onclick="closeCart()" style=" color: red; padding: 0; width:20px; height: 20px;" class="custom-btn btn-1" >X</button>
+            <h2>Your Cart</h2>
+            <div id="cartItems"></div>
+            <div class="total-section">
+                <strong>Total:</strong> <span id="cartTotal">0.00</span>
+            </div>
+            <button onclick="checkout()" class="custom-btn btn-1">Checkout</button>
+        </div>
+    </div>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 E-commerce Site. SMIT Assignment-MKA.</p>
+        </div>
+    </footer>
+    
+    <script>
+        document.getElementById('cartContainer').style.display='none';
+        function closeCart(){
+            document.getElementById('main').style.display='block';
+            document.getElementById('cartContainer').style.display='none';
+        }
+        function openCart(){
+            document.getElementById('main').style.display='none';
+            document.getElementById('cartContainer').style.display='block';
+        }
+        function loadProducts() {
+            var users = JSON.parse(localStorage.getItem('users')) || {};
+            var allProducts = [];
+
+            for (var email in users) {
+                if (users[email].products) {
+                    allProducts = allProducts.concat(users[email].products);
+                }
+            }
+
+            return allProducts;
+        }
+
+        function displayProducts(products) {
+            var container = document.getElementById('productCardsContainer');
+            container.innerHTML = '';
+
+            products.forEach(product => {
+                var card = document.createElement('div');
+                card.className = 'card';
+                
+                var cardContent = `
+                    <img src="${product.imageUrl}" alt="${product.name}">
+                    <h2>${product.name}</h2>
+                    <p><strong>Price:</strong> $${product.price}</p>
+                    <p><strong>Description:</strong> ${product.description}</p>
+                    <button onclick="addToCart(${product.id})" class="custom-btn btn-1">Add to Cart</button>
+                `;
+                
+                card.innerHTML = cardContent;
+                container.appendChild(card);
+            });
+        }
+
+        function addToCart(productId) {
+            var cart = JSON.parse(localStorage.getItem('cart')) || [];
+            var products = loadProducts();
+            var product = products.find(p => p.id == productId);
+            
+            if (product) {
+                cart.push(product);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                displayCart();
+            }
+        }
+
+        function displayCart() {
+            var cartContainer = document.getElementById('cartContainer');
+            var cartItemsDiv = document.getElementById('cartItems');
+            var cartTotalSpan = document.getElementById('cartTotal');
+            cartItemsDiv.innerHTML = '';
+
+            var cart = JSON.parse(localStorage.getItem('cart')) || [];
+            var total = 0;
+
+            if (cart.length === 0) {
+                cartItemsDiv.innerHTML = '<p>Your cart is empty.</p>';
+            } else {
+                cart.forEach(item => {
+                    var cartItemDiv = document.createElement('div');
+                    cartItemDiv.className = 'cart-item';
+                    cartItemDiv.innerHTML = `
+                        <p><strong>Name:</strong> ${item.name}</p>
+                        <p><strong>Price:</strong> ${item.price}</p>
+                        <button onclick="removeFromCart(${item.id})" class="custom-btn btn-1">Remove</button>
+                    `;
+                    cartItemsDiv.appendChild(cartItemDiv);
+
+                    // Calculate total price
+                    total += parseFloat(item.price);
+                });
+            }
+
+            // Update total price display
+            cartTotalSpan.textContent = total.toFixed(2);
+        }
+
+        function removeFromCart(productId) {
+            var cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart = cart.filter(item => item.id != productId);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            displayCart();
+        }
+
+        function checkout() {
+            alert('Checkout process...');
+            // Implement checkout logic here
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var products = loadProducts();
+            displayProducts(products);
+            displayCart();
+        });
+        function logout(){
+            localStorage.removeItem('currentUser')
+            localStorage.removeItem('cart')
+            window.location.href="index.html"
+        }
+    </script>
+</body>
+</html>
